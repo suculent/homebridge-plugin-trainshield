@@ -7,11 +7,11 @@
   },
   "accessories" : [
     {
-      "accessory" : "RelayShield",
-      "name" : "Relay Shield",
-      "description" : "Relay MQTT ON/OFF switch",
+      "accessory" : "TrainShield",
+      "name" : "Train Shield",
+      "description" : "Train MQTT controller",
       "mqtt_broker" : "192.168.1.21",
-      "mqtt_channel " : "/relay/1"
+      "mqtt_channel " : "/train/1"
     }
   ]
 }

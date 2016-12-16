@@ -8,7 +8,7 @@ var Service, Characteristic;
 
 // should go from config
 var default_broker_address = 'mqtt://localhost'
-var default_mqtt_channel = "/relay/1"
+var default_mqtt_channel = "/train/1"
 
 var mqtt = require('mqtt')
 var mqttClient = null; // will be non-null if working
@@ -16,13 +16,13 @@ var mqttClient = null; // will be non-null if working
 module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
-    homebridge.registerAccessory("homebridge-rshield", "RelayShield", RelayShield);
+    homebridge.registerAccessory("homebridge-trainshield", "TrainShield", TrainShield);
 }
 
-function RelayShield(log, config) {
+function TrainShield(log, config) {
     this.log = log;
 
-    this.name = config['name'] || "Relay Switch";
+    this.name = config['name'] || "Train Switch";
     this.mqttBroker = config['mqtt_broker'];
     this.mqttChannel = config['mqtt_channel'];
 
@@ -79,19 +79,13 @@ function init_mqtt(broker_address, channel) {
           this.brightness = 0;
         }
 
-        /* works but creates loop (maybe even when not sent from another device)
-        RelayShield.prototype.getServices()[0]
-        .getCharacteristic(Characteristic.On)
-        .setValue(this.state);
-        */
-
         console.log("[processing] message " + message)
       }     
     })
   }
 
 // Keeps brightness
-RelayShield.prototype.setPowerState = function(powerOn, callback, context) {
+TrainShield.prototype.setPowerState = function(powerOn, callback, context) {
     console.log('setPowerState: %s', String(powerOn));
     if(context !== 'fromSetValue') {        
         if (mqttClient) { 
@@ -106,7 +100,7 @@ RelayShield.prototype.setPowerState = function(powerOn, callback, context) {
     }
 }
 
-RelayShield.prototype.getPowerState = function(callback) {
+TrainShield.prototype.getPowerState = function(callback) {
     console.log('getPowerState callback(null, '+this.brightness+')');
     var status = 0
     if (this.brightness > 0) {
@@ -116,14 +110,14 @@ RelayShield.prototype.getPowerState = function(callback) {
     }
 }
 
-RelayShield.prototype.getServices = function() {
+TrainShield.prototype.getServices = function() {
 
     var lightbulbService = new Service.Lightbulb(this.name);
     var informationService = new Service.AccessoryInformation();
 
     informationService
       .setCharacteristic(Characteristic.Manufacturer, "Page 42")
-      .setCharacteristic(Characteristic.Model, "Relay Shield")
+      .setCharacteristic(Characteristic.Model, "Train Shield")
       .setCharacteristic(Characteristic.SerialNumber, "1");
 
     lightbulbService
