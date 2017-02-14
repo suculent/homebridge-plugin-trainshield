@@ -10,8 +10,8 @@
       "accessory" : "TrainShield",
       "name" : "Train Shield",
       "description" : "Train MQTT controller",
-      "mqtt_broker" : "192.168.1.21",
-      "mqtt_channel " : "/train/1"
+      "mqtt_broker" : "mqtt://192.168.1.21",
+      "mqtt_channel" : "/train/1"
     }
   ]
 }

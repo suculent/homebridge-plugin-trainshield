@@ -8,18 +8,27 @@ deviceID=node.chipid()
 wifi.setmode(wifi.STATION)
 wifi.sta.config (wifi_ssid, wifi_password)
 
+-- AI-THINKER:
+-- RST      | TXD
+-- ADC      | RXD
+-- GPIO 16  | GPIO 4
+-- GPIO 14  | GPIO 5
+-- GPIO 12  | GPIO 0
+-- GPIO 13  | GPIO 15
+-- VCC      | GND
+
 -- Pin which the train is connected to
-trainPin = 4 -- GPIO2 on AI-THINKER
+trainPin = 4 -- GPIO?
 gpio.mode(trainPin, gpio.OUTPUT)
 gpio.write(trainPin, gpio.LOW) 
  
 -- MQTT led
-mqttLed = 3 -- next one (LED on AI-THINKER)
+mqttLed = 3 -- next one (LED on AI-THINKER, probably GPIO4)
 gpio.mode(mqttLed, gpio.OUTPUT)
 gpio.write(mqttLed, gpio.LOW)
 
 m = mqtt.Client("TrainShield-" .. deviceID, 180, mqttUser, mqttPass)
-m:lwt("/lwt", "TrainShield " .. deviceID, 0, 0)
+m:lwt("/lwt", "TrainShield " .. deviceID .. "goodbye.", 0, 0)
 m:on("offline", function(con)
     ip = wifi.sta.getip()
     print ("MQTT reconnecting to " .. mqttBroker .. " from " .. ip)
@@ -55,7 +64,7 @@ end)
 
 function mqtt_sub()
     m:subscribe(mqttChannel,0, function(conn)
-        print("MQTT subscribed to " .. mqttChannel)        
+        print("MQTT subscribed to " .. mqttChannel)
         pwm.setup(mqttLed, 1, 512)
         pwm.start(mqttLed)
     end)    
@@ -67,6 +76,7 @@ tmr.alarm(0, 1000, 1, function()
         m:connect(mqttBroker, 1883, 0, function(conn)
             gpio.write(mqttLed, gpio.LOW)
             print("MQTT connected to:" .. mqttBroker)
+            m:publish("/home","Train Shield at " .. wifi.sta.getip() .. " listening to channel " .. mqttChannel,0,0)
             mqtt_sub()
         end)
     end
