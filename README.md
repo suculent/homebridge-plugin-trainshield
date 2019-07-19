@@ -1,5 +1,7 @@
 # homebridge-plugin-trainshield
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/suculent/homebridge-plugin-trainshield.svg)](https://greenkeeper.io/)
+
 This is simple [homebridge](https://github.com/nfarina/homebridge) plugin for ESP8266 as a Model Train Controller.
 
 First project target is to control a relay that powers the train itself. Future functions could involve input sensors, logic and some PWM or GPIO-3VTTL outputs.
